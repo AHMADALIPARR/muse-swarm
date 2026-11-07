@@ -1,0 +1,3 @@
+The plan touches one concern in one place; the risk is a missed
+call site, which the grep worker covers.
+ADVICE: plan

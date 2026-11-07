@@ -1,0 +1,2 @@
+checks: build clean; one probe inconclusive on the first pass.
+PROPOSAL retry-or-stop p=0.55

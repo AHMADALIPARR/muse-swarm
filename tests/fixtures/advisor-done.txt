@@ -1,0 +1,2 @@
+The result matches the task and the ledger shows every verdict.
+ADVICE: sign off
