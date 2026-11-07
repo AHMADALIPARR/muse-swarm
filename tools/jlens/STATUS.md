@@ -37,3 +37,17 @@ API calls.
 Nothing here has been executed: the imports do not exist yet in
 this tree, and the main file is incomplete as received. The
 self-test (`--self-test`) is the first check once lib/ lands.
+
+## Intake log
+
+- 2026-11-06: techniques/pbem.mjs described by owner paste (body
+  complete-looking; header cut). New dependency learned:
+  embeddings/local-embed.mjs; lib exports callClaude/callOllama,
+  synth008 includeInEntropy, stats meanPairwiseDistance/variance.
+- 2026-11-06: techniques/tps.mjs described by owner paste (header
+  cut). TPS = per-token perturbation sensitivity, the Jacobian made
+  literal (dOutput/dToken_i, composite of embedding distance and
+  length delta), reporting the top load-bearing tokens. New exports
+  learned: api roughTokens, stats cosineDistance.
+- Placeholders, not code, stand in techniques/ until byte-exact
+  files arrive: owner code is never re-typed from a chat paste.
