@@ -12,6 +12,16 @@
   pattern, lead review, DONE gate — closing with a session ledger
   whose hash chain recomputes clean under `swarm.sh verify`.
 
+## Evidence (2026-11-06)
+
+- `evidence/preprompt-demo/` holds a four-run test of the book
+  pattern behind the role cards: Gemma-2-2b-it and Hermes-3-Llama-
+  3.2-3B, each bare and each wearing the same 76-line book, same
+  task, same seed, llama.cpp on this machine. Bare runs fail (an
+  essay; a flowchart inventing confidences); both book runs emit
+  the exact fork decision block. Full transcripts and method in
+  `evidence/preprompt-demo/RESULTS.md`.
+
 ## Limits
 
 - The dry-run is the verified surface: role replies come from

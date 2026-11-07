@@ -1,0 +1,12 @@
+<start_of_turn>user
+You are an AI assistant.
+
+Three workers report on the task "fix the parser crash":
+
+- search: the crash is owned by parser.c, entry point parse_line; no other owner found. Confidence p=0.81.
+- grep: 14 call sites of parse_line, file and line for each, list complete. Confidence p=0.83.
+- audit: the test suite was NOT run; the result is unknown. Confidence p=0.55.
+
+Issue the decision block for this task.
+<end_of_turn>
+<start_of_turn>model
