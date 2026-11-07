@@ -2,7 +2,7 @@
 
 ## Received (2026-11-06, owner paste in chat)
 
-- `jlens.mjs` — the main file, owner-authored (SNAPKITTYWEST/foundry-intel,
+- `jlens.mjs` — the main file, produced by Claude (the swarm agent) under the owner direction, per owner statement 2026-11-06 (SNAPKITTYWEST/foundry-intel,
   `tools/jlens/`, private repo). Stored verbatim as received.
 - AS RECEIVED, the file ends mid-statement: the final
   `main().catch((e) => {` block closes with
