@@ -1,53 +1,72 @@
 # J-Lens in muse-swarm — status
 
-## Received (2026-11-06, owner paste in chat)
+## Integrated (2026-11-06, owner order: "add that to the repo and integrate it")
 
-- `jlens.mjs` — the main file, produced by Claude (the swarm agent) under the owner direction, per owner statement 2026-11-06 (SNAPKITTYWEST/foundry-intel,
-  `tools/jlens/`, private repo). Stored verbatim as received.
-- AS RECEIVED, the file ends mid-statement: the final
-  `main().catch((e) => {` block closes with
-  `console.error('J-Lens fatal:', e.message)` and no closing lines.
-  The paste is truncated at the tail (confirmed against the chat
-  record) — the missing lines exist in the owner's repo copy.
-  Nothing was invented to complete it.
+The three received files are in the tree, transcribed from the owner's
+chat pastes (byte-checked against the chat record for jlens.mjs):
 
-## What it is
+- `jlens.mjs` — as received, with ONE labeled minimal completion: the
+  paste was truncated inside the final `main().catch(...)` block
+  (confirmed against the chat record); the reconstruction adds only
+  `process.exit(1)` and the closing lines, marked in place.
+- `techniques/pbem.mjs` — as received from "Measurement" onward; the
+  paste began mid-comment, so a labeled reconstructed comment opener
+  restores parseability. No received line was altered.
+- `techniques/tps.mjs` — same treatment for its cut header; its paste
+  also ended one closing brace early (end of runTpsSuite), restored
+  and labeled at the file's tail.
 
-A behavioral Jacobian probe: TPS (token perturbation sensitivity),
-TSP (temperature shadow probe, H_J_proxy = KL(T1||T0)), PBEM (probe
-battery entropy measurement) — run against the public Anthropic
-Messages API as measurement subject and against local Ollama with
-logprob ground truth. Every record is WORM-sealed; a SYNTH-008 gate
-verdicts each record EVIDENCE or SILENCE. An offline mode
-(--activate-claude-jspace) loads the digital twin brain's j_space +
-the claude_j_space_extract and seals an activation record with zero
-API calls.
+## Assistant-reconstructed layer (NOT the owner's originals)
 
-## Missing pieces (needed to run)
+The originals live in the owner's private foundry-intel repo and have
+not been received. To make the tool run, the following were rebuilt
+from the contracts exercised by the received code and are labeled
+ASSISTANT-RECONSTRUCTED in their headers. Replace on sight when the
+originals arrive:
 
-- lib/api.mjs, lib/worm.mjs, lib/synth008.mjs, lib/stats.mjs
-- techniques/tsp.mjs, techniques/tps.mjs, techniques/pbem.mjs
-- The tail of jlens.mjs itself (final catch lines)
-- For activation mode: CLAUDE_J_SPACE.md, claude_j_space_extract.json,
-  and tools/twin/digital-twin-brain.json from the repo root
-- The blend the owner named (not yet identified among the above)
+- `lib/stats.mjs` — mean, variance, empiricalPmf, klDivergence,
+  cosineDistance, meanPairwiseDistance.
+- `lib/synth008.mjs` — synth008Gate (EVIDENCE/SILENCE, hits,
+  hodgeIndexHolds always null) + includeInEntropy.
+- `lib/worm.mjs` — sha256, sealRecord, verifyChain, resultsPath,
+  ensureResultsDir (append-only JSONL hash chain).
+- `lib/api.mjs` — MODELS, resolveModelAlias, resolveApiKey (env
+  only), callClaude (public Messages API), callOllama
+  (OLLAMA_HOST, default localhost:11434), roughTokens. Ollama
+  entropy_nats stays null (no reliable logprobs on the public API),
+  so PBEM correlation reports n<2 honestly.
+- `embeddings/local-embed.mjs` — deterministic hashing embedder
+  (unigram+bigram, 256-dim, L2-normalized). Lexical spread only;
+  H_J numbers produced with it carry that limit.
+- `techniques/tsp.mjs` — rebuilt from the header spec alone:
+  H_J_proxy = KL(P_T1 || P_T0) over sampled outputs.
 
-## Verification state
+## Verification (executed on this machine, 2026-11-06)
 
-Nothing here has been executed: the imports do not exist yet in
-this tree, and the main file is incomplete as received. The
-self-test (`--self-test`) is the first check once lib/ lands.
+- `node --check` clean on all 9 .mjs files.
+- `node jlens.mjs --self-test` — 7/7 PASS (SYNTH-008 both ways,
+  hodgeIndexHolds null, KL finite/non-negative, KL(P||P) ~ 0, WORM
+  seals differ, WORM chain verifies).
+- `--technique pbem --model nemotron --dry-run` resolves to
+  ollama/nemotron-super and prints the model map.
+- `--verify-chain` on the self-test chain: valid, length 2.
 
-## Intake log
+## Not yet run / still missing
 
-- 2026-11-06: techniques/pbem.mjs described by owner paste (body
-  complete-looking; header cut). New dependency learned:
-  embeddings/local-embed.mjs; lib exports callClaude/callOllama,
-  synth008 includeInEntropy, stats meanPairwiseDistance/variance.
-- 2026-11-06: techniques/tps.mjs described by owner paste (header
-  cut). TPS = per-token perturbation sensitivity, the Jacobian made
-  literal (dOutput/dToken_i, composite of embedding distance and
-  length delta), reporting the top load-bearing tokens. New exports
-  learned: api roughTokens, stats cosineDistance.
-- Placeholders, not code, stand in techniques/ until byte-exact
-  files arrive: owner code is never re-typed from a chat paste.
+- No live probe has run: the Ollama lane needs a reachable Ollama
+  endpoint (the Jetson's, when it has memory); the Anthropic lane
+  needs an API key and metered spend — the owner's explicit call.
+- Activation mode still needs the real CLAUDE_J_SPACE.md,
+  claude_j_space_extract.json, and tools/twin/digital-twin-brain.json.
+- "The blend" the owner named has not been identified among the
+  received files.
+- Whether H_J separates models the way the swarm needs (book held
+  constant, weights swapped) is the open experiment — untested.
+
+## Provenance
+
+J-Lens was produced by Claude (the swarm agent) under the owner's
+direction, per the owner's statement 2026-11-06, in
+SNAPKITTYWEST/foundry-intel `tools/jlens/` (private repo). It is
+agent work product held to the auditor's standard: headers checked,
+behavior verified by execution, reconstructions labeled.
