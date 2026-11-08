@@ -9,6 +9,9 @@
 
 A four-seat agent swarm that runs on endpoints the operator owns: an advisor, a lead, a typed-decision fork layer, and a worker swarm, with every step written to a hash-chained session ledger. It is the swarm shape the metered tools sell — advisor, lead, subagent swarm, decision router — rebuilt Ollama-and-Meta style: local models by default, Meta models in any seat by configuration, no seat rented from Anthropic.
 
+
+![Muse mascot](assets/muse-bear.png)
+
 The November 2026 additions bring Deterministic Silence admission, a zero-dependency Jetson runtime (PagedAttention, NATS client, KV policy), and a verified WORM ledger bus (Erlang supervision + Lean 4 transition predicate + C-node cross-checks).
 
 ![Jetson Orin carrier](assets/jetson-carrier.png)
