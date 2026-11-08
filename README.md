@@ -1,18 +1,21 @@
 # muse-swarm
 
-[![License: SnapKitty Opaque](https://img.shields.io/badge/license-SnapKitty%20Opaque-blue)](LICENSE)
-[![Tests](https://img.shields.io/badge/make%20test-18%2F18-brightgreen)](Makefile)
-[![Runtime](https://img.shields.io/badge/runtime-23%20cargo%20tests-success)](runtime/)
-[![Bus](https://img.shields.io/badge/Erlang%20bus-21%20checks-success)](bus/)
-[![Ledger](https://img.shields.io/badge/WORM-hash--chained%20%2B%20Lean-success)](worm/)
-[![Jetson](https://img.shields.io/badge/target-Jetson%20Orin-green)]()
+<div align="center">
 
-A four-seat agent swarm that runs on endpoints the operator owns: an advisor, a lead, a typed-decision fork layer, and a worker swarm, with every step written to a hash-chained session ledger. It is the swarm shape the metered tools sell — advisor, lead, subagent swarm, decision router — rebuilt Ollama-and-Meta style: local models by default, Meta models in any seat by configuration, no seat rented from Anthropic.
+[![License: SnapKitty Opaque](https://img.shields.io/badge/license-SnapKitty%20Opaque-0668E1)](LICENSE)
+[![Tests](https://img.shields.io/badge/make%20test-18%2F18-0668E1)](Makefile)
+[![Runtime](https://img.shields.io/badge/runtime-23%20cargo%20tests-0668E1)](runtime/)
+[![Bus](https://img.shields.io/badge/Erlang%20bus-21%20checks-0668E1)](bus/)
+[![Ledger](https://img.shields.io/badge/WORM-hash--chained%20%2B%20Lean-0668E1)](worm/)
+[![Jetson](https://img.shields.io/badge/target-Jetson%20Orin-0668E1)]()
 
+**Sovereign swarm · Meta blue · owned endpoints · verified ledger**
 
 ![Muse mascot](assets/muse-bear.png)
 
+</div>
 
+A four-seat agent swarm that runs on endpoints the operator owns: an advisor, a lead, a typed-decision fork layer, and a worker swarm, with every step written to a hash-chained session ledger. It is the swarm shape the metered tools sell — advisor, lead, subagent swarm, decision router — rebuilt Ollama-and-Meta style: local models by default, Meta models in any seat by configuration, no seat rented from Anthropic.
 
 The November 2026 additions bring Deterministic Silence admission, a zero-dependency Jetson runtime (PagedAttention, NATS client, KV policy), and a verified WORM ledger bus (Erlang supervision + Lean 4 transition predicate + C-node cross-checks).
 
@@ -134,6 +137,10 @@ SNAPKITTY OPAQUE SOURCE LICENSE v1.0 — see `LICENSE`.
 
 ---
 
+<div align="center">
+
 **SnapKitty Research Lab** · Bel esprit D'accord Trust
 
-The swarm the metered tools sell, rebuilt on owned endpoints and a verified ledger.
+*The swarm the metered tools sell, rebuilt on owned endpoints and a verified ledger.*
+
+</div>
