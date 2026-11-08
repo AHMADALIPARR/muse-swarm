@@ -13,7 +13,6 @@ A four-seat agent swarm that runs on endpoints the operator owns: an advisor, a 
 ![Muse mascot](assets/muse-bear.png)
 
 
-![Muse mascot](assets/muse-bear.png)
 
 The November 2026 additions bring Deterministic Silence admission, a zero-dependency Jetson runtime (PagedAttention, NATS client, KV policy), and a verified WORM ledger bus (Erlang supervision + Lean 4 transition predicate + C-node cross-checks).
 
