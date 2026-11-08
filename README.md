@@ -60,3 +60,53 @@ on the canned replies in `tests/fixtures/`.
 ## License
 
 SNAPKITTY OPAQUE SOURCE LICENSE v1.0 — see `LICENSE`.
+
+## Deterministic Silence (admission)
+
+Bidding for a `.mkr` ticket is not a synchronous shout. Every
+node runs the Soufflé admission rules locally
+(`admission/admission.dl`): a hard filter on VRAM and load, a
+fitness score, and a bid gate at fitness > 10. A node that
+passes maps the XOR distance between the task's WORM seal and
+its own node id to a backoff delay — the closest node claims
+first, the rest stay silent. The executable form of the rules
+is `runtime/src/silence.rs`; the claim itself is an atomic
+compare-and-swap in the Erlang lock server, where a competing
+claim wins only at strictly lower Frustration Hamiltonian
+energy. NATS subjects are partitioned by task type
+(`mkr.ticket.synthesis`, `mkr.ticket.critique`), and a node
+subscribes only to its pinned role.
+
+## The runtime (runtime/)
+
+Zero-dependency Rust for the Jetson nodes: a lock-free
+PagedAttention block table over a static VRAM arena
+(65,536 blocks of 16 tokens), a zero-copy FFI seam to the CUDA
+paged-attention kernel (pinned, memory-mapped on the Orin's
+shared LPDDR5; `--features jetson`), KV cache policy with the
+K cache pinned to q8_0 for verification work and two-phase
+pruning — blocks are freed only after the ledger accepts the
+summary — and a synchronous, stack-buffered NATS client that
+appends WORM blocks under the `Nats-Expected-Last-Sequence`
+gate and traps a wrong-sequence `-ERR` as the eviction signal.
+
+## The WORM ledger bus (bus/, worm/)
+
+The ledger is a verified state machine, not a passive log.
+The JetStream stream config (`bus/SOVEREIGN_LEDGER.stream.json`)
+is append-only at the server level (`deny_delete`,
+`deny_purge`); appends carry the expected-last-sequence header
+so a beaten append is rejected at the network layer. On the
+oracle side, an Erlang supervision tree (rest-for-one root,
+connection manager with exponential backoff, dynamic consumer
+supervisor) runs one ledger worker per stream: each proposed
+block is verified — sequence gate, chain link, seal, Ed25519
+signature — and an invalid block crashes the worker on
+purpose, so the supervisor restarts it purged. The transition
+itself is formalized in Lean 4 (`worm/Transition.lean`:
+admissibility, determinism, append-only prefix preservation),
+compiled to a C export, and served by a Lean verifier C node
+(`bus/cnode/lean_verifier_node.c`) that Erlang calls over
+distribution; a second C node cross-checks seals, and a custom
+shell (`bus/worm_shell.erl`) inspects tails, verifies the
+sealed chain from disk, and compares local and C-node seals.

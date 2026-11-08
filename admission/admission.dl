@@ -1,0 +1,20 @@
+// Baseline local state on the Jetson Orin
+.decl NodeState(vram_free:number, load_avg:number, node_id:symbol)
+.decl TaskReq(task_id:symbol, vram_req:number, min_compute:number, task_hash:symbol)
+
+// Rule 1: The Hard Filter. If 16GB VRAM is saturated, become invisible.
+.decl Eligible(task_id:symbol)
+Eligible(t) :- TaskReq(t, req_v, req_c, _), NodeState(v, c, _), v >= req_v, c <= req_c.
+
+// Rule 2: Compute local fitness score (Available VRAM to Compute Ratio)
+.decl FitnessScore(task_id:symbol, score:number)
+FitnessScore(t, ((v - req_v) * 100) / c) :- Eligible(t), TaskReq(t, req_v, req_c, _), NodeState(v, c, _).
+
+// Rule 3: XOR Distance Calculation (Pseudo-relation mapped from Rust FFI)
+.decl XorDistance(task_id:symbol, distance:number)
+// Assumes a custom functor @xor_dist calculates the metric
+XorDistance(t, @xor_dist(h, n)) :- Eligible(t), TaskReq(t, _, _, h), NodeState(_, _, n). 
+
+// Rule 4: Final Bid Intent - Only outputs if Fitness is high enough
+.decl BidIntent(task_id:symbol, delay_ms:number)
+BidIntent(t, d) :- XorDistance(t, d), FitnessScore(t, s), s > 10. // 10 is an arbitrary minimum fitness threshold

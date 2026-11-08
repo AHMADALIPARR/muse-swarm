@@ -42,6 +42,49 @@ check dryrun-done-gate "1" "$(grep -c 'advisor done-gate advice=sign off' "$tmp/
 chain=$(./swarm.sh verify "$tmp/repo" | sed 's/ .*//' )
 check dryrun-chain "CHAIN" "$chain"
 
+
+# --- runtime crate (guarded: needs the rustup toolchain) ---
+if [ -x "$HOME/workspace/.tools/cargo/bin/cargo" ]; then
+    export RUSTUP_HOME="$HOME/workspace/.tools/rustup"
+    export CARGO_HOME="$HOME/workspace/.tools/cargo"
+    export PATH="$CARGO_HOME/bin:$PATH"
+    if cargo test --quiet --manifest-path runtime/Cargo.toml > /tmp/mkr-cargo.log 2>&1; then
+        echo "PASS runtime-cargo-tests"; pass=$((pass + 1))
+    else
+        echo "FAIL runtime-cargo-tests"; cat /tmp/mkr-cargo.log; fail=$((fail + 1))
+    fi
+    seal=$(cargo run --quiet --manifest-path runtime/Cargo.toml 2>/dev/null | sed -n 's/^fixture seal: //p')
+    check runtime-fixture-seal "065549abeaef063101db2e10e48d9b4334b6151fe3db0d13d3b20bcf9aca2d68" "$seal"
+fi
+
+# --- Erlang bus + C nodes (guarded: needs OTP) ---
+if command -v erl >/dev/null 2>&1 && command -v erlc >/dev/null 2>&1; then
+    (cd bus && erlc -o ebin worm_root_sup.erl worm_jetstream_sup.erl \
+        worm_nats_conn.erl worm_db.erl lean_ffi.erl \
+        worm_ledger_worker.erl lock_server.erl worm_registry.erl \
+        worm_boot.erl worm_shell.erl worm_tests.erl verifier_test.erl)
+    if (cd bus && timeout 120 erl -noshell -pa ebin -s worm_tests main) > /tmp/mkr-bus.log 2>&1; then
+        echo "PASS bus-worm-tests"; pass=$((pass + 1))
+    else
+        echo "FAIL bus-worm-tests"; cat /tmp/mkr-bus.log; fail=$((fail + 1))
+    fi
+    if sh bus/run_cnode_tests.sh > /tmp/mkr-cnode.log 2>&1; then
+        cat /tmp/mkr-cnode.log | grep '^PASS' | while read -r line; do echo "$line"; done
+        pass=$((pass + $(grep -c '^PASS' /tmp/mkr-cnode.log)))
+    else
+        echo "FAIL bus-cnode-tests"; cat /tmp/mkr-cnode.log; fail=$((fail + 1))
+    fi
+fi
+
+# --- Lean transition (guarded: needs the elan toolchain) ---
+if [ -x "$HOME/.elan/bin/lean" ]; then
+    if "$HOME/.elan/bin/lean" worm/Transition.lean > /tmp/mkr-lean.log 2>&1; then
+        echo "PASS lean-transition-checks"; pass=$((pass + 1))
+    else
+        echo "FAIL lean-transition-checks"; cat /tmp/mkr-lean.log; fail=$((fail + 1))
+    fi
+fi
+
 echo "---"
 echo "$pass passed, $fail failed"
 [ "$fail" = "0" ]

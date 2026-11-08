@@ -1,0 +1,19 @@
+[package]
+name = "mkr-runtime"
+version = "0.1.0"
+edition = "2021"
+
+[features]
+# jetson: the real CUDA path — cudaHostAlloc pinned buffers and
+# the nvcc trampoline (ffi/paged_attention_launcher.cu). Off by
+# default so the crate builds and tests on any host; the pinned
+# buffer API is identical either way (see src/ffi.rs).
+jetson = []
+
+[lib]
+name = "mkr_runtime"
+path = "src/lib.rs"
+
+[[bin]]
+name = "mkr-runtime-demo"
+path = "src/main.rs"

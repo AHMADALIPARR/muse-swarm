@@ -1,2 +1,7 @@
 fork
-.swarm/
+runtime/target/
+bus/ebin/
+bus/cnode/lean_verifier_node
+bus/cnode/worm_seal_node
+erl_crash.dump
+worm-data/

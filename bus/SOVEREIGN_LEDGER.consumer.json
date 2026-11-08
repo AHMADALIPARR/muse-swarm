@@ -1,0 +1,14 @@
+{
+  "stream_name": "SOVEREIGN_LEDGER",
+  "config": {
+    "deliver_policy": "by_start_sequence",
+    "opt_start_seq": 43,
+    "ack_policy": "explicit",
+    "ack_wait": 30000000000,
+    "max_deliver": -1,
+    "filter_subject": "sovereign.ledger.append",
+    "replay_policy": "instant",
+    "max_waiting": 512,
+    "max_ack_pending": 1024
+  }
+}
